@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b0714" />
+  <title>Donghua VF — V4</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="navbar">
+    <a href="#home" class="logo" aria-label="Accueil Donghua VF">
+      <svg class="logo-symbol" viewBox="0 0 64 64" aria-hidden="true">
+        <defs>
+          <linearGradient id="moonGradient" x1="0" x2="1">
+            <stop offset="0%" stop-color="#c57cff"/>
+            <stop offset="100%" stop-color="#7447ff"/>
+          </linearGradient>
+        </defs>
+        <circle cx="32" cy="32" r="24" fill="url(#moonGradient)"/>
+        <circle cx="42" cy="24" r="24" fill="#0b0714"/>
+        <text x="22" y="42" fill="#ffffff" font-size="18" font-weight="800">伊凡</text>
+      </svg>
+      <span class="logo-text">Donghua<span>VF</span></span>
+    </a>
+
+    <nav>
+      <button class="nav-link active" data-filter="all">Accueil</button>
+      <button class="nav-link" data-filter="favorites">Favoris</button>
+      <button class="nav-link" data-filter="watching">En cours</button>
+      <button class="nav-link" data-filter="completed">Terminés</button>
+    </nav>
+
+    <button id="openAddButton" class="primary compact">＋ Ajouter</button>
+  </header>
+
+  <main id="home">
+    <section class="hero">
+      <div class="hero-shade"></div>
+      <div class="hero-content">
+        <span class="hero-badge">DONGHUA VF — V4</span>
+        <h1>Ta bibliothèque.<br />Tes vidéos. Ton univers.</h1>
+        <p>
+          Ajoute une vidéo YouTube, une playlist, un lien vidéo direct ou un fichier depuis ton iPhone,
+          puis regarde tout depuis cette interface.
+        </p>
+        <div class="hero-actions">
+          <button id="heroAddButton" class="primary">Ajouter un contenu</button>
+          <button id="heroFavoritesButton" class="secondary">♥ Mes favoris</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="dashboard">
+      <article><span>Bibliothèque</span><strong id="totalCount">0</strong></article>
+      <article><span>En cours</span><strong id="watchingCount">0</strong></article>
+      <article><span>Terminés</span><strong id="completedCount">0</strong></article>
+      <article><span>Favoris</span><strong id="favoriteCount">0</strong></article>
+    </section>
+
+    <section id="continueSection" class="continue-section" hidden>
+      <div class="section-title">
+        <div>
+          <span class="eyebrow">REPRENDRE</span>
+          <h2>Continuer à regarder</h2>
+        </div>
+      </div>
+      <div id="continueGrid" class="continue-grid"></div>
+    </section>
+
+    <section class="catalog">
+      <div class="section-title">
+        <div>
+          <span class="eyebrow">MA COLLECTION</span>
+          <h2>Bibliothèque</h2>
+        </div>
+        <span id="resultCount" class="result-count"></span>
+      </div>
+
+      <div class="controls">
+        <label class="search">
+          <span>⌕</span>
+          <input id="searchInput" type="search" autocomplete="off" placeholder="Rechercher un titre, une plateforme ou un épisode…" />
+          <button id="clearSearchButton" type="button">✕</button>
+        </label>
+
+        <select id="filterSelect">
+          <option value="all">Tous</option>
+          <option value="favorites">Favoris</option>
+          <option value="watching">En cours</option>
+          <option value="planned">À voir</option>
+          <option value="completed">Terminés</option>
+        </select>
+
+        <select id="sourceFilterSelect">
+          <option value="all">Toutes les sources</option>
+          <option value="youtube">YouTube</option>
+          <option value="direct">Lien direct</option>
+          <option value="local">Fichier local</option>
+        </select>
+
+        <select id="sortSelect">
+          <option value="recent">Plus récents</option>
+          <option value="title">Titre A–Z</option>
+          <option value="episode">Épisode le plus élevé</option>
+        </select>
+      </div>
+
+      <section id="emptyState" class="empty-state">
+        <div>🌙</div>
+        <h3>Ta bibliothèque est vide</h3>
+        <p>Ajoute ton premier donghua pour commencer.</p>
+        <button id="emptyAddButton" class="primary">Ajouter maintenant</button>
+      </section>
+
+      <section id="noResultsState" class="empty-state" hidden>
+        <div>🔎</div>
+        <h3>Aucun résultat</h3>
+        <p>Essaie un autre mot ou modifie les filtres.</p>
+      </section>
+
+      <section id="libraryGrid" class="grid" aria-live="polite"></section>
+    </section>
+  </main>
+
+  <dialog id="addDialog">
+    <form id="addForm">
+      <div class="dialog-header">
+        <div>
+          <span class="eyebrow">NOUVEL AJOUT</span>
+          <h2>Ajouter un contenu</h2>
+        </div>
+        <button type="button" id="closeDialogButton" class="close-button">✕</button>
+      </div>
+
+      <div class="source-tabs" role="tablist">
+        <button type="button" class="source-tab active" data-source="youtube">YouTube</button>
+        <button type="button" class="source-tab" data-source="direct">Lien direct</button>
+        <button type="button" class="source-tab" data-source="local">Fichier iPhone</button>
+      </div>
+
+      <input id="sourceTypeInput" type="hidden" value="youtube" />
+
+      <label>
+        Titre
+        <input id="titleInput" required maxlength="100" placeholder="Ex. Renegade Immortal" />
+      </label>
+
+      <div class="form-row">
+        <label>
+          Épisode
+          <input id="episodeInput" required min="1" type="number" value="1" />
+        </label>
+        <label>
+          Statut
+          <select id="statusInput">
+            <option value="watching">En cours</option>
+            <option value="planned">À voir</option>
+            <option value="completed">Terminé</option>
+          </select>
+        </label>
+      </div>
+
+      <div id="youtubeFields">
+        <label>
+          Lien YouTube ou playlist
+          <input id="youtubeInput" type="url" placeholder="https://youtube.com/watch?v=..." />
+        </label>
+        <p class="helper">
+          La vidéo ou la playlist sera affichée directement dans ton site avec le lecteur YouTube intégré.
+        </p>
+      </div>
+
+      <div id="directFields" hidden>
+        <label>
+          Lien vidéo direct
+          <input id="directInput" type="url" placeholder="https://exemple.com/video.mp4" />
+        </label>
+        <p class="helper">
+          Fonctionne surtout avec les fichiers MP4, WebM et certains flux HLS autorisés.
+        </p>
+      </div>
+
+      <div id="localFields" hidden>
+        <label>
+          Choisir un fichier vidéo
+          <input id="localInput" type="file" accept="video/*" />
+        </label>
+        <p class="helper warning">
+          Les fichiers locaux fonctionnent uniquement sur cet appareil et peuvent devoir être sélectionnés à nouveau après fermeture du navigateur.
+        </p>
+      </div>
+
+      <label>
+        Image de couverture
+        <input id="coverInput" type="url" placeholder="https://exemple.com/affiche.jpg" />
+      </label>
+
+      <label class="checkbox-row">
+        <input id="favoriteInput" type="checkbox" />
+        Ajouter aux favoris
+      </label>
+
+      <button class="primary full" type="submit">Enregistrer</button>
+    </form>
+  </dialog>
+
+  <dialog id="playerDialog" class="player-dialog">
+    <div class="dialog-header">
+      <div>
+        <h2 id="playerTitle"></h2>
+        <p id="playerEpisode"></p>
+      </div>
+      <button id="closePlayerButton" class="close-button">✕</button>
+    </div>
+
+    <div id="youtubePlayerContainer" class="video-frame" hidden></div>
+    <video id="videoPlayer" controls playsinline preload="metadata" hidden></video>
+
+    <div class="player-footer">
+      <button id="markWatchedButton" class="secondary">Marquer comme terminé</button>
+      <span id="progressLabel">Progression : 0 %</span>
+    </div>
+
+    <p id="playerError" class="error" hidden>
+      Impossible de lire ce contenu. Vérifie que le lien est valide et que l’intégration est autorisée.
+    </p>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
