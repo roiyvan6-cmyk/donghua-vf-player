@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#080811" />
+  <title>Donghua VF — V3</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="navbar">
+    <a href="#home" class="logo">
+      <span class="logo-mark">龍</span>
+      <span>Donghua<span>VF</span></span>
+    </a>
+
+    <nav>
+      <button class="nav-link active" data-filter="all">Accueil</button>
+      <button class="nav-link" data-filter="favorites">Favoris</button>
+      <button class="nav-link" data-filter="watching">En cours</button>
+    </nav>
+
+    <button id="openAddButton" class="add-button">＋ Ajouter</button>
+  </header>
+
+  <main id="home">
+    <section class="hero">
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <span class="hero-badge">BIBLIOTHÈQUE PERSONNELLE</span>
+        <h1>Ton univers donghua,<br />réuni au même endroit.</h1>
+        <p>
+          Organise tes séries, sauvegarde tes favoris, retrouve instantanément un épisode
+          et reprends ton visionnage sans te perdre.
+        </p>
+        <div class="hero-actions">
+          <button id="heroAddButton" class="primary">Ajouter un donghua</button>
+          <button id="heroFavoritesButton" class="secondary">♥ Mes favoris</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="dashboard">
+      <article>
+        <span>Bibliothèque</span>
+        <strong id="totalCount">0</strong>
+      </article>
+      <article>
+        <span>En cours</span>
+        <strong id="watchingCount">0</strong>
+      </article>
+      <article>
+        <span>Terminés</span>
+        <strong id="completedCount">0</strong>
+      </article>
+      <article>
+        <span>Favoris</span>
+        <strong id="favoriteCount">0</strong>
+      </article>
+    </section>
+
+    <section class="catalog">
+      <div class="catalog-header">
+        <div>
+          <span class="eyebrow">MA COLLECTION</span>
+          <h2>Bibliothèque</h2>
+        </div>
+        <span id="resultCount"></span>
+      </div>
+
+      <div class="controls">
+        <label class="search">
+          <span>⌕</span>
+          <input id="searchInput" type="search" autocomplete="off" placeholder="Rechercher un titre ou un épisode…" />
+          <button id="clearSearchButton" type="button">✕</button>
+        </label>
+
+        <select id="filterSelect">
+          <option value="all">Tous</option>
+          <option value="favorites">Favoris</option>
+          <option value="watching">En cours</option>
+          <option value="planned">À voir</option>
+          <option value="completed">Terminés</option>
+        </select>
+
+        <select id="sortSelect">
+          <option value="recent">Plus récents</option>
+          <option value="title">Titre A–Z</option>
+          <option value="episode">Épisode le plus élevé</option>
+        </select>
+      </div>
+
+      <section id="emptyState" class="empty-state">
+        <div>🐉</div>
+        <h3>Ta bibliothèque est vide</h3>
+        <p>Ajoute ton premier donghua pour commencer.</p>
+        <button id="emptyAddButton" class="primary">Ajouter maintenant</button>
+      </section>
+
+      <section id="noResultsState" class="empty-state" hidden>
+        <div>🔎</div>
+        <h3>Aucun résultat</h3>
+        <p>Essaie un autre titre ou modifie les filtres.</p>
+      </section>
+
+      <section id="libraryGrid" class="grid"></section>
+    </section>
+  </main>
+
+  <dialog id="addDialog">
+    <form id="addForm">
+      <div class="dialog-header">
+        <div>
+          <span class="eyebrow">NOUVEL AJOUT</span>
+          <h2>Ajouter un donghua</h2>
+        </div>
+        <button type="button" id="closeDialogButton" class="close-button">✕</button>
+      </div>
+
+      <label>
+        Titre
+        <input id="titleInput" required maxlength="80" placeholder="Ex. Renegade Immortal" />
+      </label>
+
+      <div class="form-row">
+        <label>
+          Épisode
+          <input id="episodeInput" required min="1" type="number" value="1" />
+        </label>
+
+        <label>
+          Statut
+          <select id="statusInput">
+            <option value="watching">En cours</option>
+            <option value="planned">À voir</option>
+            <option value="completed">Terminé</option>
+          </select>
+        </label>
+      </div>
+
+      <label>
+        Lien vidéo
+        <input id="videoInput" required type="url" placeholder="https://exemple.com/video.mp4" />
+      </label>
+
+      <label>
+        Image de couverture
+        <input id="coverInput" type="url" placeholder="https://exemple.com/affiche.jpg" />
+      </label>
+
+      <label class="checkbox-row">
+        <input id="favoriteInput" type="checkbox" />
+        Ajouter aux favoris
+      </label>
+
+      <button class="primary full" type="submit">Enregistrer</button>
+    </form>
+  </dialog>
+
+  <dialog id="playerDialog" class="player-dialog">
+    <div class="dialog-header">
+      <div>
+        <h2 id="playerTitle"></h2>
+        <p id="playerEpisode"></p>
+      </div>
+      <button id="closePlayerButton" class="close-button">✕</button>
+    </div>
+    <video id="videoPlayer" controls playsinline preload="metadata"></video>
+    <p id="playerError" class="error" hidden>
+      Impossible de lire ce lien vidéo.
+    </p>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
